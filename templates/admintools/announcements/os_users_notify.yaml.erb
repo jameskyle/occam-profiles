@@ -1,0 +1,8 @@
+from_email: <%= @from_email %>
+from_name: <%= @from_name %>
+from_host: <%= @from_host %>
+smtp_server: <%= @smtp_server %>
+blacklist:
+<% @blacklist.each do |email| -%>
+  - <%= email %>
+<% end -%>

@@ -1,0 +1,5 @@
+#!/bin/bash
+# managed by puppet
+
+swift -R 0 -U services:<%= @dispersion_username %> -K <%= @dispersion_password %> -A http://<%= @mgmt_ctrl_ip %>:5000/v2.0 -V 2 list dispersion_objects 2>/dev/null |grep -q dispersion_ && echo swift_available=true || echo swift_available=false
+
