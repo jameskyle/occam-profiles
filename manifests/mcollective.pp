@@ -44,9 +44,10 @@
 # Copyright 2013 AT&T Foundry, unless otherwise noted.
 
 class profile::mcollective(
-  $broker_host = 'puppet'
+  $broker_host  = 'puppet',
+  $orchestrator = 'ops1',
 ) {
-  if $::hostname == hiera('profile::mcollective::orchestrator') {
+  if $::hostname == $orchestrator {
     class {'::mcollective':
       client            => true,
       server            => true,
