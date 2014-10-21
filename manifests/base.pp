@@ -57,12 +57,12 @@ class profile::base (
 
   include stdlib
   include profile::users::create
-  include profile::network
+  #include profile::network
   include profile::puppet::agent
-  include profile::firewall::pre
+  #include profile::firewall::pre
   #include profile::firewall::post
   include profile::mcollective
-  include ::firewall
+  #include ::firewall
   include ::puppet::repo::puppetlabs
 
   if str2bool($monitoring) {
@@ -80,10 +80,10 @@ class profile::base (
     restrict => ['127.0.0.1'],
   }
 
-  Firewall {
-    #before  => Class['profile::firewall::post'],
-    require => Class['profile::firewall::pre'],
-  }
+  # Firewall {
+  #   #before  => Class['profile::firewall::post'],
+  #   require => Class['profile::firewall::pre'],
+  # }
 
   $sudo_confs = hiera_hash('sudo_confs', {})
   create_resources('sudo::conf', $sudo_confs)
@@ -97,8 +97,6 @@ class profile::base (
   class { 'timezone': timezone => $timezone }
 
   Profile::Users::Managed<| groups == foundry  |>
-  Apt::Source<| |> -> Package<| title != 'ubuntu-cloud-keyring' and
-                                title != 'python-software-properties' |>
 
   if $::virtual == 'virtualbox' {
     notify {"Virtualbox guest detected": }
