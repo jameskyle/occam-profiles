@@ -57,12 +57,7 @@ class profile::base (
 
   include stdlib
   include profile::users::create
-  #include profile::network
   include profile::puppet::agent
-  #include profile::firewall::pre
-  #include profile::firewall::post
-  #include profile::mcollective
-  #include ::firewall
   include ::puppet::repo::puppetlabs
 
   if str2bool($monitoring) {
