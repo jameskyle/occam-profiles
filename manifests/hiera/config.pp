@@ -73,25 +73,23 @@ class profile::hiera::config (
 
   $backend_confs = {
     'gpg'  => {
-      'datadir' => '/var/puppet/environments/%{::environment}/puppet/hiera',
+      'datadir' => '/etc/puppet/environments/%{::environment}/hiera',
       'key_dir' => '/etc/puppet/keyrings'
     },
     'yaml' => {
-      'datadir' => '/var/puppet/environments/%{::environment}/puppet/hiera'
+      'datadir' => '/etc/puppet/environments/%{::environment}/hiera'
     },
   }
 
   $hierarchy_top = [
-    "local/secrets/${::zone}",
-    'local/fqdns/%{::fqdn}',
-    "local/zones/${::zone}",
-    'local/hostgroups/%{::hostgroup}',
-    'local/users/users',
-    'users/users_occam'
+    'secrets/${::zone}',
+    'fqdns/%{::fqdn}',
+    'zones/%{::zone}',
+    'hostgroups/%{::hostgroup}',
+    'users/users',
   ]
 
   $hierarchy_bottom = [
-    'occam',
     'common',
   ]
   $backends = ['gpg', 'yaml', 'puppetdb']
@@ -104,11 +102,14 @@ class profile::hiera::config (
     content => template('profile/hiera/hiera.yaml.erb'),
   }
 
-  package {'build-essential': }
-  package {'hiera-gpg':
-    ensure   => present,
-    provider => 'gem',
-    require  => Package['build-essential']
+  case $::osfamily {
+    'Debian': {
+      package {'build-essential': }
+      package {'hiera-gpg':
+        ensure   => present,
+        provider => 'gem',
+        require  => Package['build-essential']
+      }
+    }
   }
-
 }
