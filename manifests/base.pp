@@ -61,7 +61,7 @@ class profile::base (
   include profile::puppet::agent
   #include profile::firewall::pre
   #include profile::firewall::post
-  include profile::mcollective
+  #include profile::mcollective
   #include ::firewall
   include ::puppet::repo::puppetlabs
 
