@@ -5,14 +5,10 @@
 ---
 :hierarchy:
 <% @hierarchy_top.each do |dir| -%>
-  - <%= dir %>
-<% end -%>
-<% @occam_apps.each do |app| -%>
-  - apps/<%= app.split("occam-").last %>
-  - users/users_<%= app.split("occam-").last %>
+  - "<%= dir %>"
 <% end -%>
 <% @hierarchy_bottom.each do |dir| -%>
-  - <%= dir %>
+  - "<%= dir %>""
 <% end -%>
 
 <% @backend_confs.each do |k,v| -%>
@@ -25,5 +21,5 @@
 
 :backends:
 <% @backends.each do |dir| -%>
-  - <%= dir %>
+  - "<%= dir %>"
 <% end -%>
