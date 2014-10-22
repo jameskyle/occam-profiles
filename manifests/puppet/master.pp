@@ -56,20 +56,11 @@
 # Copyright 2013 AT&T Foundry, unless otherwise noted.
 class profile::puppet::master (
   $storeconfigs      = true,
-  $puppet_root       = '/var/puppet',
   $autosign          = true,
   $environment       = 'production',
 ) {
 
   include profile::hiera::config
-
-  $apps = hiera('profile::hiera::config::occam_apps')
-  $env_path = "${puppet_root}/environments/\$environment"
-  $mainmodulepath = "${env_path}/puppet/modules:${env_path}/puppet/occam/modules"
-  $manifest = "${env_path}/puppet/manifests/site.pp"
-
-  # Add main path + app specific module paths
-  $modulepath = chop(inline_template('<%= @mainmodulepath %>:<% @apps.each do |app| %><%= @env_path %>/puppet/apps/<%= app.split("occam-").last %>/modules:<% end %>'))
 
   class { 'puppetdb':
     ssl_listen_address => '0.0.0.0',
@@ -78,10 +69,9 @@ class profile::puppet::master (
 
   class {'::puppet::master':
     storeconfigs => true,
-    modulepath   => $modulepath,
-    manifest     => $manifest,
-    autosign     => true,
-    reports      => 'store,http',
+    environments => 'directory',
+    autosign     => '$confdir/autosign.conf { mode = 664 }',
+    reports      => 'store,foreman,puppetdb',
   }
 
   # we want to  ensure puppet master has certain dns entries...it's a
@@ -102,6 +92,57 @@ class profile::puppet::master (
     value   => $::fqdn
   }
 
+  ini_setting {'mainlogsetting':
+    ensure  => present,
+    section => 'main',
+    setting => 'logdir',
+    value   => '/var/log/puppet',
+  }
+
+ ini_setting {'mainrundirsetting':
+    ensure  => present,
+    section => 'main',
+    setting => 'rundir',
+    value   => '/var/run/puppet',
+  }
+
+  ini_setting {'mainssldirsetting':
+    ensure  => present,
+    section => 'main',
+    setting => 'ssldir',
+    value   => '$vardir/ssl',
+  }
+
+  ini_setting {'mainprivatekeydirsetting':
+    ensure  => present,
+    section => 'main',
+    setting => 'privatekeydir',
+    value   => '$ssldir/private_keys { group = service }',
+  }
+
+
+  ini_setting {'mainhostprivkeysetting':
+    ensure  => present,
+    section => 'main',
+    setting => 'hostprivkey',
+    value   => '$privatekeydir/$certname.pem { mode = 640 }',
+  }
+
+  ini_setting {'mainshowdiffsetting':
+    ensure  => present,
+    section => 'main',
+    setting => 'showdiff',
+    value   => false,
+  }
+
+
+  ini_setting {'mainhiera_configsetting':
+    ensure  => present,
+    section => 'main',
+    setting => 'hiera_config',
+    value   => '$confdir/hiera.yaml',
+  }
+
   ini_setting {'masternodeterminussetting':
     ensure  => present,
     section => 'master',
@@ -113,28 +154,49 @@ class profile::puppet::master (
     ensure  => present,
     section => 'master',
     setting => 'external_nodes',
-    value   => '/opt/occamengine/bin/enc'
+    value   => '/etc/puppet/node.rb',
   }
 
-  ini_setting {'masterreporturl':
+
+  ini_setting {'mastercasetting':
     ensure  => present,
     section => 'master',
-    setting => 'reporturl',
-    value   => 'http://127.0.0.1:8160/api/puppet/report'
+    setting => 'ca',
+    value   => true,
   }
 
-  file {$puppet_root:
-    ensure  => directory,
-    mode    => '0755',
-    owner   => 'root',
-    group   => 'root',
+  ini_setting {'masterssldirsetting':
+    ensure  => present,
+    section => 'master',
+    setting => 'ssldir',
+    value   => '/var/lib/puppet/ssl',
   }
 
-  file { ["${puppet_root}/environments", "${puppet_root}/archive"]:
-    ensure  => directory,
-    mode    => '0755',
-    owner   => 'root',
-    group   => 'root',
-    require => File[$puppet_root],
+  ini_setting {'mastercertnamesetting':
+    ensure  => present,
+    section => 'master',
+    setting => 'certname',
+    value   => $::fqdn,
+  }
+
+  ini_setting {'masterstrict_variablesetting':
+    ensure  => present,
+    section => 'master',
+    setting => 'strict_variables',
+    value   => false,
+  }
+
+  ini_setting {'masterbasemodulepathsetting':
+    ensure  => present,
+    section => 'master',
+    setting => 'basemodulepath',
+    value   => '/etc/puppet/environments/common:/etc/puppet/modules:/usr/share/puppet/modules',
+  }
+
+  ini_setting {'masterstoreconfigs_backendsetting':
+    ensure  => present,
+    section => 'master',
+    setting => 'storeconfigs_backend',
+    value   => 'puppetdb',
   }
 }
