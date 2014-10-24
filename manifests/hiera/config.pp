@@ -82,7 +82,7 @@ class profile::hiera::config (
   }
 
   $hierarchy_top = [
-    'secrets/${::zone}',
+    'secrets/%{::zone}',
     'fqdns/%{::fqdn}',
     'zones/%{::zone}',
     'hostgroups/%{::hostgroup}',
