@@ -159,7 +159,6 @@ class profile::openstack::controller (
 ){
 
   include sudo
-  include interfaces
 
   require_param($mgmt_interface, '$mgmt_interface')
   require_param($mgmt_ctrl_ip, '$mgmt_ctrl_ip')
