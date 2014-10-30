@@ -258,14 +258,12 @@ class profile::openstack::controller (
 
     if ($config_ha) {
       #external bridge need to be set up WITHOUT GATEWAY!
-      interfaces::iface {$external_bridge_name:
+      network::interface{$external_bridge_name:
           family  => 'inet',
           method  => 'manual',
           auto    => '1',
-          options => [
-          'post-up ifconfig $IFACE up',
-          'pre-down ifconfig $IFACE down',
-          ]
+          post_up => ['ifconfig $IFACE up'],
+          pre_down => ['ifconfig $IFACE down'],
       }
       #percona dirty hack
       exec {'fake mysql config':
@@ -281,27 +279,21 @@ class profile::openstack::controller (
     } else {
       #mgmt virtual ip for ctrl
       if ($mgmt_local_ip != $mgmt_ctrl_ip) {
-        interfaces::iface {"${mgmt_interface}:0":
+        network::interface{"${mgmt_interface}:0":
             family  => 'inet',
             method  => 'static',
-            auto    => '1',
-            options => [
-              "address ${mgmt_ctrl_ip}",
-              "netmask ${mgmt_local_netmask}",
-            ]
+            ipaddr  => "${mgmt_ctrl_ip}",
+            netmask => "${mgmt_local_netmask}",
         }
       }
 
       #external bridge need to be set up WITHOUT GATEWAY!
       $bridge_config = hiera($external_bridge_name)
-      interfaces::iface {$external_bridge_name:
+      network::interface {$external_bridge_name:
           family  => $bridge_config['family'],
           method  => 'static',
-          auto    => '1',
-          options => [
-          "address ${bridge_config['address']}",
-          "netmask ${bridge_config['netmask']}",
-          ]
+          ipaddr  => "${bridge_config['address']}",
+          netmask => "${bridge_config['netmask']}",
       }
 
       #rabbit host(s)

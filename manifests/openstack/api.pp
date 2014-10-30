@@ -117,4 +117,9 @@ class profile::openstack::api (
     ipaddresses       => $service_address,
     ports             => '5672',
   }
+  @@haproxy::balancermember {"metadata-${::fqdn}":
+    listening_service => 'metadata',
+    ipaddresses       => $service_address,
+    ports             => '8775',
+  }
 }
