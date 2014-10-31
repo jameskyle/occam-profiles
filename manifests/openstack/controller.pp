@@ -159,7 +159,9 @@ class profile::openstack::controller (
 ){
 
   include sudo
-
+  package { 'ethtool':
+    ensure => latest,
+  }
   require_param($mgmt_interface, '$mgmt_interface')
   require_param($mgmt_ctrl_ip, '$mgmt_ctrl_ip')
   require_param($pub_interface, '$pub_interface')
