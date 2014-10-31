@@ -300,7 +300,7 @@ class profile::openstack::controller (
       $ha_rabbit_cluster_nodes = false
     }
 
-    Class['::openstack::controller'] -> Interfaces::Iface[$external_bridge_name]
+    Class['::openstack::controller'] -> Network::Interface[$external_bridge_name]
 
     require_param($public_address, '$public_address')
     require_param($admin_password, '$admin_password')
