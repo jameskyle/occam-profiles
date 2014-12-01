@@ -43,11 +43,11 @@
 # Copyright 2013 AT&T Foundry, unless otherwise noted.
 class profile::puppet::agent(
   $environment   = 'production',
-  $puppet_server = undef,
+  $puppet_server = "puppet.${::domain}",
 ) {
 
   class {'::puppet::agent':
     environment   => $environment,
-    puppet_server => get_real($puppet_server, "puppet.${::domain}"),
+    puppet_server => $puppet_server,
   }
 }
