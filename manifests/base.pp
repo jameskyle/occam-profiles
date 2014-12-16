@@ -53,6 +53,7 @@ class profile::base (
   $purge_sudo = false,
   $monitoring = false,
   $deb        = [ 'profile::system::debian', 'apt::unattended_upgrades' ],
+  $address    = $::ipaddress_eth0,
 ) {
 
   include stdlib
@@ -64,7 +65,9 @@ class profile::base (
     include profile::monitoring::client
   }
 
-  class {'profile::dns::setup': stage => 'setup' }
+  class {'profile::dns::setup':
+    stage => 'setup',
+  }
 
   class {'::sudo':
     purge => $purge_sudo,
