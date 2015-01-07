@@ -27,7 +27,7 @@ module Puppet::Parser::Functions
     EOS
   ) do |args|
 
-    raise(Puppet::ParseError, "set_real(): Wrong number of arguments " +
+    raise(Puppet::ParseError, "require_param(): Wrong number of arguments " +
       "given (#{args.size} of 2 required)") if args.size != 2
 
     param = args[0]

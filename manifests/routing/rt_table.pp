@@ -58,21 +58,10 @@ define profile::routing::rt_table (
   $table_prefix = 'puppet'
 ) {
 
-  if $interface == undef {
-    fail('interface param needs to be defined')
-  }
-
-  if $ipaddress == undef {
-    fail('ipaddress param needs to be defined')
-  }
-
-  if $netmask == undef {
-    fail('netmask param needs to be defined')
-  }
-
-  if $network == undef {
-    fail('network param needs to be defined')
-  }
+  require_param($interface, '$interface')
+  require_param($ipaddress, '$ipaddress')
+  require_param($netmask,   '$netmask')
+  require_param($network,   '$network')
 
   if $gateway == undef {
     $tmp = split($network,'[.]')
@@ -92,7 +81,7 @@ define profile::routing::rt_table (
     path    => ['/usr/sbin', '/usr/bin', '/sbin', '/bin'],
     unless  => [
       "grep ${table} ${rtfile}",
-      "ip route show | grep default | grep ${l_gateway}",
+      "ip route show | grep default | grep ${interface}",
     ],
     before  => Exec["ip_route_net_${table}"],
   }
@@ -102,7 +91,7 @@ define profile::routing::rt_table (
     path    => ['/usr/sbin', '/usr/bin', '/sbin', '/bin'],
     unless  => [
       "ip route show table ${table}| grep ${interface} | grep ${ipaddress}",
-      "ip route show | grep default | grep ${l_gateway}",
+      "ip route show | grep default | grep ${interface}",
     ],
     before  => Exec["ip_route_gw_${table}"],
   }
@@ -112,7 +101,7 @@ define profile::routing::rt_table (
     path    => ['/usr/sbin', '/usr/bin', '/sbin', '/bin'],
     unless  => [
       "ip route show table ${table}| grep default | grep ${l_gateway}",
-      "ip route show | grep default | grep ${l_gateway}",
+      "ip route show | grep default | grep ${interface}",
     ],
     before  => Exec["ip_rule_${table}"],
   }
@@ -122,9 +111,8 @@ define profile::routing::rt_table (
     path    => ['/usr/sbin', '/usr/bin', '/sbin', '/bin'],
     unless  => [
       "ip rule show | grep ${ipaddress} | grep ${table}",
-      "ip route show | grep default | grep ${l_gateway}",
+      "ip route show | grep default | grep ${interface}",
     ],
   }
-
 }
 
