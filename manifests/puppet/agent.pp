@@ -42,12 +42,14 @@
 #
 # Copyright 2013 AT&T Foundry, unless otherwise noted.
 class profile::puppet::agent(
-  $environment   = 'production',
-  $puppet_server = "puppet.${::domain}",
+  $environment      = 'production',
+  $puppet_server    = "puppet.${::domain}",
+  $puppet_run_style = "service",
 ) {
 
   class {'::puppet::agent':
-    environment   => $environment,
-    puppet_server => $puppet_server,
+    environment      => $environment,
+    puppet_server    => $puppet_server,
+    puppet_run_style => $puppet_run_style
   }
 }
