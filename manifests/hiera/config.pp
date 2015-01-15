@@ -52,7 +52,7 @@
 #     'secrets/%{::zone}',
 #     'fqdns/%{::fqdn}',
 #     'zones/%{::zone}',
-#     'hostgroups/%{::hostgroup}',
+#     'hostgroups/%{::occam_hostgroup}',
 #     'users',
 #     'common',
 #   ],
@@ -85,7 +85,7 @@ class profile::hiera::config (
     'secrets/%{::zone}',
     'fqdns/%{::fqdn}',
     'zones/%{::zone}',
-    'hostgroups/%{::hostgroup}',
+    'hostgroups/%{::occam_hostgroup}',
     'users/users',
   ]
 
@@ -105,7 +105,7 @@ class profile::hiera::config (
   case $::osfamily {
     'Debian': {
       package {'build-essential': }
-      package {'hiera-gpg':
+      package {'hiera-eyaml':
         ensure   => present,
         provider => 'gem',
         require  => Package['build-essential']

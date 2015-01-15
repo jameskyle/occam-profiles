@@ -21,7 +21,7 @@
 ## THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                ##
 ##                                                                           ##
 ###############################################################################
-Facter.add("hostgroup") do
+Facter.add("occam_hostgroup") do
   setcode do
     Facter.value('hostname').sub(/-*\d+$/, '')
   end
