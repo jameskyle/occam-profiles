@@ -109,7 +109,7 @@ class profile::hiera::config {
         provider => 'gem',
         require  => Package['build-essential']
       }
-    },
+    }
     'RedHat': {
       package {'hiera-eyaml':
         ensure   => present,
