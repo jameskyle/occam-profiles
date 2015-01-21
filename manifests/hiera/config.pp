@@ -68,7 +68,6 @@
 # Copyright 2013 AT&T Foundry, unless otherwise noted.
 
 class profile::hiera::config {
-  include apache
   $backend_confs = {
     'eyaml'  => {
       'datadir'           => '/etc/puppet/environments/%{::environment}/hiera',
