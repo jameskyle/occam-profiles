@@ -8,13 +8,13 @@
   - "<%= dir %>"
 <% end -%>
 <% @hierarchy_bottom.each do |dir| -%>
-  - "<%= dir %>""
+  - "<%= dir %>"
 <% end -%>
 
 <% @backend_confs.each do |k,v| -%>
 :<%= k -%>:
 <% v.each do |opt,val| -%>
-  :<%= opt %>: <%= val %>
+  :<%= opt %>: "<%= val %>"
 <% end -%>
 
 <% end -%>
