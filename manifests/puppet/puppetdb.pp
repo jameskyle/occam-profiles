@@ -6,7 +6,7 @@ class profile::puppet::puppetdb {
     ssl_listen_address => '0.0.0.0',
     java_args          => { '-Xmx' => '4g' },
   }
-  class{ '::puppetdb::master::config': 
+  class{ '::puppetdb::master::config':
     puppet_service_name => 'httpd',
   }
 }

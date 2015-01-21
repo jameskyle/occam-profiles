@@ -67,14 +67,13 @@
 #
 # Copyright 2013 AT&T Foundry, unless otherwise noted.
 
-class profile::hiera::config (
-  $occam_apps = ['cloud']
-) {
-
+class profile::hiera::config {
   $backend_confs = {
-    'gpg'  => {
-      'datadir' => '/etc/puppet/environments/%{::environment}/hiera',
-      'key_dir' => '/etc/puppet/keyrings'
+    'eyaml'  => {
+      'datadir'           => '/etc/puppet/environments/%{::environment}/hiera',
+      'pkcs7_private_key' => '/etc/puppet/secure/keys/private.pem',
+      'pkcs7_public_key'  => '/etc/puppet/secure/keys/public.pem',
+      'extension'         => 'yaml',
     },
     'yaml' => {
       'datadir' => '/etc/puppet/environments/%{::environment}/hiera'
@@ -92,7 +91,7 @@ class profile::hiera::config (
   $hierarchy_bottom = [
     'common',
   ]
-  $backends = ['gpg', 'yaml', 'puppetdb']
+  $backends = ['eyaml', 'yaml', 'puppetdb']
 
   file {'/etc/puppet/hiera.yaml':
     ensure  => present,
@@ -109,6 +108,12 @@ class profile::hiera::config (
         ensure   => present,
         provider => 'gem',
         require  => Package['build-essential']
+      }
+    },
+    'RedHat': {
+      package {'hiera-eyaml':
+        ensure   => present,
+        provider => 'gem',
       }
     }
   }
