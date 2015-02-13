@@ -44,7 +44,7 @@
 class profile::puppet::agent(
   $environment      = 'production',
   $puppet_server    = "puppet.${::domain}",
-  $puppet_run_style = "service",
+  $puppet_run_style = 'service',
 ) {
 
   class {'::puppet::agent':

@@ -48,18 +48,24 @@
 # Copyright 2013 AT&T Foundry, unless otherwise noted.
 
 class profile::base (
-  $timezone    = 'UTC',
-  $ntp_servers = [ '0.us.pool.ntp.org', '1.us.pool.ntp.org' ],
-  $purge_sudo  = false,
-  $monitoring  = false,
-  $deb         = [ 'profile::system::debian', 'apt::unattended_upgrades' ],
-  $address     = $::ipaddress_eth0,
-  $puppetrepo  = true,
+  $timezone         = 'UTC',
+  $ntp_servers      = [ '0.us.pool.ntp.org', '1.us.pool.ntp.org' ],
+  $purge_sudo       = false,
+  $monitoring       = false,
+  $deb              = [ 'profile::system::debian', 'apt::unattended_upgrades' ],
+  $address          = $::ipaddress_eth0,
+  $puppetrepo       = false,
+  $puppet_run_style = 'service',
 ) {
 
   include stdlib
   include profile::users::create
-  include profile::puppet::agent
+  include profile::network
+
+  class  {'profile::puppet::agent':
+    puppet_run_style => $puppet_run_style,
+  }
+
 
   if str2bool($puppetrepo) {
     include ::puppet::repo::puppetlabs
