@@ -32,10 +32,10 @@
 # === Copyright
 #
 # Copyright 2013 AT&T Foundry, unless otherwise noted.
-class profile::openstack::setup {
+class profile::openstack::setup (
+  $release = 'juno',
+){
   package { 'ebtables': ensure => present }
-
-  $release = 'havana'
 
   if ($::operatingsystem == 'Ubuntu' and
       $::lsbdistdescription =~ /^.*LTS.*$/) {
